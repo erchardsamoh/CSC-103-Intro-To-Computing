@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="" />
+  <title>103 Project 3: Game of Life</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  
+  <style type="text/css">
+  body 
+  {
+  	font-family:Gill Sans MT;
+  	color:#657b83;
+  	background-color:#fdf6e3;
+  	max-width:500pt;
+  	padding-left:25pt;
+  	padding-right:25pt;
+  	padding-bottom:20pt;
+  	margin:0 auto 0 auto;
+  	text-align:justify;
+  }
+  a:link {color:#6c71c4;}
+  a:visited {color:#859900;}
+  a:hover {color:#268bd2;}
+  a:active {color:#d33682;}
+  h1{}
+  h2{border-style:solid;
+   text-align:center;
+  }
+  h3
+  {
+  	margin-bottom:2pt;
+  	/*color:#268bd2;*/
+  	font-weight:bold;
+  }
+  strong
+  {
+  	color:#d33682;
+  	font-weight:bolder;
+  }
+  em
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  	font-weight:bolder;
+  }
+  code
+  {
+      background-color:#eee8d5;
+      color:#586e75;
+  }
+  table.sourceCode
+  {
+      background-color:#eee8d5;
+      color:#586e75;
+  }
+  pre.sourceCode
+  {
+      background-color:#eee8d5;
+      color:#586e75;
+  }
+  .math
+  {
+      /*background-color:#eee8d5;*/
+      color:#586e75;
+      font-family:Times New Roman;
+  }
+  /*use a contextual style to undo the blue-ness:*/
+  .math em
+  {
+      color:#586e75;
+  	font-weight:normal;
+  }
+  .descrip
+  {
+  	max-width:500pt;
+  	padding-left:25pt;
+  	text-align:justify;
+  }
+  .descripbig
+  {
+  	max-width:575pt;
+  	padding-left:0pt;
+  	text-align:justify;
+  }
+  .emph
+  {
+  	color:#d33682;
+  	font-weight:bolder;
+  }
+  .litem
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  	font-weight:bolder;
+  }
+  .hl
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  }
+  .required
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  	font-weight:bold;
+  }
+  .inputbox
+  {
+  	background-color:#eee8d5;
+  	color:#586e75;
+  	font-family:Gill Sans MT;
+  	font-weight:bolder;
+  }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">103 Project 3: Game of Life</h1>
+<p class="author"></p>
+</header>
+<h2 id="due-dates"><em>Due Dates</em></h2>
+<h3 id="warm-up-due-wednesday-october-7th-1159pm"><a href="warmup.html">Warm-up</a> due Wednesday, October 7th @ 11:59pm</h3>
+<h3 id="full-project-due-friday-october-16th-1159pm">Full project due Friday, October 16th @ 11:59pm</h3>
+<!---{{ Synopsis-->
+<h2 id="synopsis">Synopsis</h2>
+<p>In this project, you are going to implement <a href="https://en.wikipedia.org/wiki/Conway%27s_game_of_life">Conway’s Game of Life</a>. There are quite some interesting things to say about the Game of Life, but for our purposes, we just care that it makes pretty pictures.</p>
+<p>What you’ll learn from doing this:</p>
+<ul>
+<li>More about the <code>&lt;vector&gt;</code> class.</li>
+<li>Reading and writing files.</li>
+<li>Command line arguments and <code>getopt_long</code>.</li>
+<li>Functions and arguments.</li>
+<li>A bit more about the unix shell.</li>
+</ul>
+<h2 id="important-notes-on-grading">Important Notes on Grading</h2>
+<p>As always,</p>
+<ul>
+<li>Code that does not compile will receive a 0.</li>
+<li>Please follow the <a href="#submission-procedure">submission instructions</a> carefully!</li>
+</ul>
+<p><strong>NOTE:</strong> this project might be considerably more involved than the last one. I absolutely encourage you to discuss ideas and even work along side your friends, but at the end of the day <strong>what you submit must be your own work</strong>. To make sure this is the case, the TA will spot-check by asking you questions about some of your programs’ details during recitation. It will be very suspicious if there is any part of the program you can’t explain.</p>
+<!---}}-->
+<!---{{ Details-->
+<h2 id="details">Details</h2>
+<p>In case you didn’t bother to read the Wikipedia article, the Game of Life is a cellular automaton. In plainer terms, it’s a grid of cells which are all in one of two states (“alive” or “dead”). The grid is then transformed at regular intervals with each cell’s state being updated according to the following set of simple rules:</p>
+<ol type="1">
+<li>If a live cell has fewer than 2 neighbors, it dies (underpopulation).</li>
+<li>If a live cell has more than 3 neighbors, it dies (overpopulation).</li>
+<li>If a dead cell has exactly 3 neighbors, it becomes alive (reproduction).</li>
+</ol>
+<p>The <a href="warmup.html">readme for the warm-up</a> contains thorough details and several examples that should leave you with a clear understanding of the rules. Once you have the warm-up working, all that’s needed to adapt it to the full project are the following tasks:</p>
+<ol type="1">
+<li>Reading/writing grids from files.</li>
+<li>Handling the various command line options (which includes a new mode of operation).</li>
+</ol>
+<p><strong>Note:</strong> the remainder of this document supposes the reader has already completed the warm-up, so <a href="warmup.html">do that now</a> if you haven’t already.</p>
+<h3 id="command-line-interface">Command line interface</h3>
+<p>Part of this assignment’s purpose is to teach you about writing programs that accept arguments on the command line. You got a little exposure to this while completing the <a href="warmup.html">warmup</a>, but we require something more elaborate here. In particular, we want our program to understand the options shown in the <a href="https://en.wikipedia.org/wiki/Usage_message">usage string</a> below:<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a>Usage: ./life [OPTIONS]...</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a>Text-based version of Conway&#39;s game of life.</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a>   --seed,-s     FILE     read start state from FILE.</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>   --world,-w    FILE     store current world in FILE.</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>   --fast-fw,-f  NUM      evolve system for NUM generations and quit.</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a>   --help,-h              show this message and exit.</span></code></pre></div>
+<p>Writing code from scratch to parse these options out of a given command line might be enough for a project of its own, but since it wouldn’t be terribly fun, I’ve given you a skeleton that works most of this stuff out for you (using GNU’s venerable <code>getopt_long</code> function).</p>
+<p>The <code>-s</code> option is for the initial state of the “world”. You can see examples in the <code>res/</code> directory for the format. Dead cells are represented by <code>.</code> characters and live ones by <code>O</code>. You can infer the grid size from the length of the first line, and the total number of lines you’ve read.</p>
+<p>Note that there are two different <em>modes</em> for your program. The first mode slowly evolves the initial configuration once every second, writing the output to whatever file was supplied with <code>-w</code>. You can then watch the system evolve by watching the output file with the <code>watch</code> command. It’ll look something like this:</p>
+<center>
+<figure>
+<img src="gol.gif" alt="" /><figcaption>A few early generations of the R-pentomino.</figcaption>
+</figure>
+</center>
+<p>The second mode will evolve the system as fast as it can for some specified number of generations, specified by <code>-f</code>. <strong>Important:</strong> if the user supplies <code>-f</code>, you should not do any waiting! Compute the desired generation, write the output, and quit.</p>
+<h3 id="standard-input-and-output">Standard input and output</h3>
+<p>You can also use this program as a <em>filter</em> that reads standard input and writes standard output (like most unix utilities). We’ll use the following (fairly common) convention: the special argument <code>-</code> will be used to denote standard input for files to be read, and standard output for files to be written. To illustrate, note that the command<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <code>./life -s tests/0 -w - -f 1</code> should behave identically to running the warm up code with argument <code>1</code> as shown below.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a>$ <span class="ex">./warm-up/warmup</span> 1</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a><span class="ex">.............O.O....</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true"></a><span class="ex">..............OO....</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true"></a><span class="ex">..............O.....</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true"></a>$ <span class="ex">./life</span> -s tests/0 -w - -f 1</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true"></a><span class="ex">....................</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true"></a><span class="ex">.............O.O....</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true"></a><span class="ex">..............OO....</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true"></a><span class="ex">..............O.....</span></span></code></pre></div>
+<p>Here’s a more involved example that would evolve a glider 3 generations:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>$ <span class="ex">./life</span> -f 1 -s res/glider-40x20 -w - \</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a>   <span class="kw">|</span> <span class="ex">./life</span> -f 1 -s - -w - <span class="kw">|</span> <span class="ex">./life</span> -f 1 -s - -w -</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true"></a><span class="ex">..................O.....................</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true"></a><span class="ex">...................OO...................</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true"></a><span class="ex">..................OO....................</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true"></a><span class="ex">........................................</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true"></a><span class="ex">........................................</span></span></code></pre></div>
+<p>Of course, we could have done this in a much more straightforward way with <code>./life -f 3 -s res/glider-40x20 -w -</code> (note the <code>-f 3</code>), but the above command pipeline was to illustrate the “filter” usage of the program.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<h3 id="default-mode-1-generation-second">Default mode (1 generation / second)</h3>
+<p>If you just want to watch the excitement unfold, you can run <code>./life</code> in one terminal, and in another, <code>watch -n 1 "cat /tmp/gol-world-current"</code>. The <code>watch</code> command just reads the contents of <code>/tmp/gol-world-current</code> once a second and dumps the result to the screen. If things are working, pretty pictures should happen. You can kill the program with <code>ctrl-c</code> (this works for your program, and for <code>watch</code>). And if for some reason you object to having multiple terminals open, try this:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a>$ <span class="ex">./life</span> -s res/acorn-110x60 <span class="kw">&amp;</span> <span class="co"># &lt;-- don&#39;t forget the &amp; at the end.</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>$ <span class="ex">watch</span> -n 1 <span class="st">&quot;cat /tmp/gol-world-current&quot;</span></span></code></pre></div>
+<p>And then to stop your program, run <code>pkill -x life</code> once you’ve stopped <code>watch</code> with <code>ctrl-c</code>.</p>
+<!---}}-->
+<!---{{ Debugging-->
+<h2 id="debugging-testing">Debugging + Testing</h2>
+<p>If everything looks like it is working, you can make extra-sure by running some automated tests. Perform the tests by running <code>./test.sh</code>. <strong>A few important notes about the test script:</strong></p>
+<ol type="1">
+<li>The test script assumes that if <code>-w -</code> is given to your program on the command line, then it will write <code>stdout</code>, and not just a file named “-”. If you haven’t made that work, then <code>test.sh</code> will fail! (It also uses <code>-f 1</code>, so make sure your program understands <code>-f</code> too!)</li>
+<li>If something goes wrong, it will give you a message like <code>2 --&gt; 3 failed</code>. This means the output of your program (for one generation) on <code>tests/2</code> was different than <code>tests/3</code>, but they should have been the same. The script will give you a <code>diff</code> command that you can use to investigate (it should contain the exact invocation of your program that was used in the test).</li>
+<li>The output needs to be byte-for-byte identical to the test files, so make sure there are no extraneous spaces or newlines.</li>
+</ol>
+<p>If you want to run your program under <code>gdb</code>, compile it with <code>make -B debug</code> to make sure all the variable names are made visible to <code>gdb</code>. Then follow the <a href="https://www-cs.ccny.cuny.edu/~wes/CSC103/gdb.html">tutorial</a>.</p>
+<!---}}-->
+<!---{{ Remarks-->
+<h2 id="remarks">Remarks</h2>
+<p>The “right” way to write a program like this (which frequently updates portions of an entire terminal) is probably to use the <a href="https://en.wikipedia.org/wiki/Ncurses">ncurses</a> library. So why aren’t we doing it that way? Mainly because <a href="https://en.wikipedia.org/wiki/Ncurses">ncurses</a> can be difficult to debug and introduces more complications and distractions than would be worth what is gained. Hence we let the <code>watch</code> program do the curses stuff for us instead.</p>
+<!---}}-->
+<!---{{ Hints-->
+<h2 id="hints">Hints</h2>
+<p>As simple as the basic idea is, you have to handle quite a few details. Here is some advice that might help you manage it all.</p>
+<h3 id="vectors">Vectors</h3>
+<p>I’d like you to use <a href="http://www.cplusplus.com/reference/vector/vector/">vector</a> objects to store the cells. This is pretty straightforward, but there is one syntax nuisance, which is that you must separate the last <code>&gt;</code> by a space<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, like this in the declaration:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>vector&lt;vector&lt;<span class="dt">bool</span>&gt; &gt; W;</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a><span class="co">//                 ^ this space is important -_-</span></span></code></pre></div>
+<p>You can then access the <code>(i,j)</code> element of the structure as you would expect:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a>W[i][j] = <span class="kw">false</span>; <span class="co">// set the cell in the ith row and jth column to false.</span></span></code></pre></div>
+<p>By the way, you will probably want to use <em>two</em> such vectors. One for the old state, and one for the new state (doing this in place is would be a little tricky, as you want to transform the entire board at once, rather than piece by piece).</p>
+<h3 id="reading-files">Reading files</h3>
+<p>There are several ways. One way is to use <a href="http://www.cplusplus.com/reference/fstream/fstream/">file streams</a>, which work more or less like <code>cin</code> and <code>cout</code>, but they can write to files other than <code>stdin</code> and <code>stdout</code>. However, I’ve had frustrations regarding the lack of transparency with these so I would instead use the old C-style methods which are described below. If you really want to use the C++ mechanisms, maybe read the tutorials <a href="https://en.wikibooks.org/wiki/C%2B%2B_Programming/Code/IO#fstream">here</a> or <a href="http://www.cplusplus.com/doc/tutorial/files/">here</a>.</p>
+<p>How to open and read a file:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">/* Open the file (for reading), storing the handle in f: */</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="dt">FILE</span>* f = fopen(<span class="st">&quot;/path/to/myfile&quot;</span>,<span class="st">&quot;rb&quot;</span>);</span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">/* make sure file was opened properly: */</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="cf">if</span> (!f) {</span>
+<span id="cb7-5"><a href="#cb7-5"></a>    <span class="co">// deal with error by printing a message, or maybe quitting</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>    <span class="co">// the entire program with a non-zero exit code, like this:</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>    exit(<span class="dv">1</span>);</span>
+<span id="cb7-8"><a href="#cb7-8"></a>}</span>
+<span id="cb7-9"><a href="#cb7-9"></a><span class="co">/* Read a single character from the file: */</span></span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="dt">char</span> c; <span class="co">// storage for the byte we&#39;ll read</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>fread(&amp;c,<span class="dv">1</span>,<span class="dv">1</span>,f); <span class="co">// read one byte, place it in c</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a><span class="co">/* when you&#39;re done with the file, be sure to close it like this: */</span></span>
+<span id="cb7-13"><a href="#cb7-13"></a>fclose(f);</span></code></pre></div>
+<p>You can tell when you hit the end of file by looking at the return value from <code>fread</code> – it will be 0.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Here is a slightly more involved example to read a grid of <code>.</code> and <code>O</code> into a vector of <code>bool</code>, where the name of the file you are reading is stored in a <code>string</code> called <code>fname</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb8-1"><a href="#cb8-1"></a>vector&lt;vector&lt;<span class="dt">bool</span>&gt; &gt; world;</span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="dt">FILE</span>* f = fopen(fname.c_str(),<span class="st">&quot;rb&quot;</span>); <span class="co">/* note conversion to char* */</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a>world.push_back(vector&lt;<span class="dt">bool</span>&gt;()); <span class="co">/* add a new row */</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="dt">size_t</span> rows = <span class="dv">0</span>; <span class="co">/* current row we are filling */</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="cf">while</span> (fread(&amp;c,<span class="dv">1</span>,<span class="dv">1</span>,f)) {</span>
+<span id="cb8-6"><a href="#cb8-6"></a>    <span class="cf">if</span> (c == <span class="ch">&#39;</span><span class="sc">\n</span><span class="ch">&#39;</span>) {</span>
+<span id="cb8-7"><a href="#cb8-7"></a>        <span class="co">/* found newline; add a new row */</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>        rows++;</span>
+<span id="cb8-9"><a href="#cb8-9"></a>        world.push_back(vector&lt;<span class="dt">bool</span>&gt;());</span>
+<span id="cb8-10"><a href="#cb8-10"></a>    } <span class="cf">else</span> <span class="cf">if</span> (c == <span class="ch">&#39;.&#39;</span>) {</span>
+<span id="cb8-11"><a href="#cb8-11"></a>        world[rows].push_back(<span class="kw">false</span>); <span class="co">/* dead x_x */</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>    } <span class="cf">else</span> {</span>
+<span id="cb8-13"><a href="#cb8-13"></a>        world[rows].push_back(<span class="kw">true</span>); <span class="co">/* alive 8D */</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>    }</span>
+<span id="cb8-15"><a href="#cb8-15"></a>}</span>
+<span id="cb8-16"><a href="#cb8-16"></a>fclose(f);</span>
+<span id="cb8-17"><a href="#cb8-17"></a><span class="co">/* </span><span class="al">NOTE</span><span class="co">: might have some issues with an empty last row.</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co"> * But the fix is pretty easy (just remove it!). */</span></span></code></pre></div>
+<p>How to open and write a file:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode numberSource cpp numberLines"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1"></a><span class="co">/* Open the file (for writing), storing the handle in f: */</span></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="dt">FILE</span>* f = fopen(<span class="st">&quot;/path/to/myfile&quot;</span>,<span class="st">&quot;wb&quot;</span>);</span>
+<span id="cb9-3"><a href="#cb9-3"></a><span class="co">/* Write a single character to the file: */</span></span>
+<span id="cb9-4"><a href="#cb9-4"></a><span class="dt">char</span> c = <span class="ch">&#39;.&#39;</span>;</span>
+<span id="cb9-5"><a href="#cb9-5"></a>fwrite(&amp;c,<span class="dv">1</span>,<span class="dv">1</span>,f); <span class="co">// write a byte to f</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a><span class="co">/* close f when done: */</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>fclose(f);</span></code></pre></div>
+<p><em>NOTE:</em> for the output file, you may want to keep the same <code>FILE* f</code> open, and keep on re-writing it (without an <code>fclose</code> and <code>fopen</code> each time). For this, you have to move back to the beginning of the file. Fortunately, this is as easy as:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>rewind(f);</span></code></pre></div>
+<p>The next write will be to the first byte of the file.</p>
+<p>I have also made defaults for the input and output files. Furthermore, I made them both the same, so that if you run the program without arguments, it will just pick up where it left off.</p>
+<h4 id="stdin-and-stdout">stdin and stdout</h4>
+<p>There are built-in <code>FILE*</code> variables that correspond to standard input and standard output. They are named <code>stdin</code> and <code>stdout</code>, respectively. So, if someone passes a filename of <code>"-"</code>, then you can just use <code>stdin</code> (<code>stdout</code>) as the <code>FILE*</code> that you read from (write to), rather than opening a file with <code>fopen</code>. If this makes sense, <a href="#how-to-sleep-_">skip to the next section</a>, but if you need clarification, here are a few more words.</p>
+<p>Like so many other things in a unix-style system, standard input and output are presented as files. You can actually find them in your file system. On Linux, the standard output for a program lives here: <code>/proc/[PID]/fd/1</code>, where <code>[PID]</code> is the process number (each program has its own standard output of course). With that in mind, you could think of the <code>stdout</code> variable in your program (to a rough approximation) as if the following was done for you before entering <code>main()</code>:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="dt">FILE</span>* stdout = fopen(<span class="st">&quot;/proc/[PID of this program]/fd/1&quot;</span>,<span class="st">&quot;wb&quot;</span>);</span></code></pre></div>
+<p>If this still seems strange, maybe try an example to see for yourself. If you have two terminals open, in one of them do this:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>$ <span class="bu">echo</span> <span class="va">$$</span>   <span class="co"># the $$ variable gives the process id of this shell</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a><span class="ex">518</span></span></code></pre></div>
+<p>Now that you have the process identifier for that terminal’s shell, you could do this from another terminal:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a>$ <span class="bu">echo</span> <span class="st">&#39;hello&#39;</span> <span class="op">&gt;</span> /proc/518/fd/1</span></code></pre></div>
+<p>And you should see “hello” appear in the first terminal. If you want to read more about this, consult <code>man stdout</code>.</p>
+<h3 id="how-to-sleep-_">How to Sleep =_=</h3>
+<p>Sometimes it is nice to suspend the execution of your program for an interval of time. Rather than writing a “busy loop” that just wastes resources, the right way to do this is to suspend the execution of your program, which can be done with some help from the operating system. The <code>sleep</code> function (found in <code>&lt;unistd.h&gt;</code>) can be used like this:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a>sleep(<span class="dv">1</span>); <span class="co">// sleep for 1 second</span></span></code></pre></div>
+<h3 id="suggested-functions">Suggested functions</h3>
+<p>I might also recommend you organize your work into a number of functions. I’ve given some prototypes in source file that you can implement if you want, but if you think you have a better way, go for it! Talking out strategies with your teammates can be very educational! Anyway, here’s what I used:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a><span class="co">// count neighbors of cell i,j on grid g:</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a><span class="dt">size_t</span> nbrCount(<span class="dt">size_t</span> i, <span class="dt">size_t</span> j, <span class="at">const</span> vector&lt;vector&lt;<span class="dt">bool</span>&gt; &gt;&amp; g);</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a><span class="dt">void</span> update(); <span class="co">// transform the old version of the world into the new one</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a><span class="dt">int</span> initFromFile(<span class="at">const</span> string&amp; fname); <span class="co">// read initial state from file</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a><span class="dt">void</span> dumpState(<span class="dt">FILE</span>* f); <span class="co">// write the state to a file</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a><span class="dt">void</span> mainLoop(); <span class="co">// update state, write state, sleep, repeat...</span></span></code></pre></div>
+<h3 id="modular-arithmetic">Modular arithmetic</h3>
+<p>When checking for live neighbors of a cell, modular arithmetic may seem like a convenient way to take care of what happens at the edges of the grid. For example, rather than checking on cell <code>(i,j+1)</code>, you might look at <code>(i,(j+1)%n)</code> where <code>n</code> is the number of columns in the grid. This works fine, but what about looking left from the left edge? It turns out that <code>(i,(j-1)%n)</code> can get you into trouble. If you used a signed type for <code>j</code>, then you’ll soon realize <code>(-1)%n == -1</code>, instead of <code>n-1</code> as you might have hoped. And if you used an unsigned type, you won’t be much better off (although the result is a little more interesting!). Here’s one way around the issue:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true"></a><span class="dt">int</span> reduced = (maybenegative + n) % n;</span></code></pre></div>
+<p>Then (as long as <code>maybenegative</code> isn’t less than <code>-n</code>, as should be the case for subtracting by 1) you’ll be sure to get something in the range <code>0..n-1</code>.</p>
+<h3 id="getopt_long">getopt_long</h3>
+<p>This is the standard way (on Linux) to process command line arguments. Don’t worry too much about how it works right now. The stuff I’ve left in the skeleton will parse the options, and place them in global variables. In particular, the variables <code>max_gen,wfilename,initfilename</code> will be set for you. Their meaning should be clear from the comments:</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="dt">size_t</span> max_gen = <span class="dv">0</span>; <span class="co">/* if &gt; 0, fast forward to this generation. */</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a>string wfilename =  <span class="st">&quot;/tmp/gol-world-current&quot;</span>; <span class="co">/* write state here */</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a>string initfilename = <span class="st">&quot;/tmp/gol-world-current&quot;</span>; <span class="co">/* read initial state from here. */</span></span></code></pre></div>
+<h3 id="makefiles">Makefiles</h3>
+<p>I again gave you a simplistic makefile for your convenience. Using the tutorials <a href="https://www.gnu.org/software/make/manual/html_node/Introduction.html">here</a>, try to reverse engineer it if you have time.</p>
+<!---}}-->
+<!---{{ Submission Procedure-->
+<h2 id="submission-procedure">Submission Procedure</h2>
+<p>Assuming you have the <code>postdata</code> file all set with your info,<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> just run:</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true"></a>$ <span class="bu">cd</span> ~/csc103-projects/</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true"></a>$ <span class="ex">./submit.sh</span> p3/warm-up/warmup.cpp   <span class="co"># turn in warm-up</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true"></a>$ <span class="ex">./submit.sh</span> p3/gol.cpp              <span class="co"># turn in full project</span></span></code></pre></div>
+<p>If you see a green message saying something about “success”, then it worked. A receipt will be stored in a file named <code>[name of cpp file]-rcpt.html</code>.</p>
+<p><em>Note:</em> you can also use the <a href="https://www-cs.ccny.cuny.edu/~wes/CSC103/upload.html">online form</a> if that is more convenient. A few <strong>important notes:</strong></p>
+<ul>
+<li><em>Save the receipt.</em> You will need this to get your homework score back later from <a href="https://www-cs.ccny.cuny.edu/~wes/CSC103/download.html">the hw download page</a>.</li>
+<li><em>Don’t change the filename.</em> Just edit and submit the files from the repository. If you turn a files with different names, they will not be graded.</li>
+<li><em>Respect the deadline.</em> Turning in homework past the deadline will be noticed, and may lead to a zero.</li>
+</ul>
+<!---}}-->
+<!---{{ links-->
+<!---}}-->
+<!---
+% vim:ff=unix:textwidth=78:foldmethod=marker:foldmarker={{,}}
+-->
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>You can run <code>./life --help</code> to show the usage string.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Interpretation: <code>-s tests/0</code> means read the starting state from <code>tests/0</code>, <code>-w -</code> means write the result to <code>stdout</code>, and <code>-f 1</code> means evolve system for just one generation and quit.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Probably not super useful in such a specialized setting, but I do want you to get used to the idea, and have some practice in writing these types of programs.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>This has been rectified in recent standards of the language.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>This is a bit of an oversimplification, but don’t worry about that for now. It is pretty safe to assume that <code>fread</code> returning 0 means you ran out of file if you use it as in the example. See <code>man fread</code> if you want to learn more.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>If you need more detailed instructions on setting this up, please consult the project 1 readme.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</body>
+</html>

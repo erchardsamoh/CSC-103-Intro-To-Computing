@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="" />
+  <title>Game of Life: Warm-up</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  
+  <style type="text/css">
+  body 
+  {
+  	font-family:Gill Sans MT;
+  	color:#657b83;
+  	background-color:#fdf6e3;
+  	max-width:500pt;
+  	padding-left:25pt;
+  	padding-right:25pt;
+  	padding-bottom:20pt;
+  	margin:0 auto 0 auto;
+  	text-align:justify;
+  }
+  a:link {color:#6c71c4;}
+  a:visited {color:#859900;}
+  a:hover {color:#268bd2;}
+  a:active {color:#d33682;}
+  h1{}
+  h2{border-style:solid;
+   text-align:center;
+  }
+  h3
+  {
+  	margin-bottom:2pt;
+  	/*color:#268bd2;*/
+  	font-weight:bold;
+  }
+  strong
+  {
+  	color:#d33682;
+  	font-weight:bolder;
+  }
+  em
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  	font-weight:bolder;
+  }
+  code
+  {
+      background-color:#eee8d5;
+      color:#586e75;
+  }
+  table.sourceCode
+  {
+      background-color:#eee8d5;
+      color:#586e75;
+  }
+  pre.sourceCode
+  {
+      background-color:#eee8d5;
+      color:#586e75;
+  }
+  .math
+  {
+      /*background-color:#eee8d5;*/
+      color:#586e75;
+      font-family:Times New Roman;
+  }
+  /*use a contextual style to undo the blue-ness:*/
+  .math em
+  {
+      color:#586e75;
+  	font-weight:normal;
+  }
+  .descrip
+  {
+  	max-width:500pt;
+  	padding-left:25pt;
+  	text-align:justify;
+  }
+  .descripbig
+  {
+  	max-width:575pt;
+  	padding-left:0pt;
+  	text-align:justify;
+  }
+  .emph
+  {
+  	color:#d33682;
+  	font-weight:bolder;
+  }
+  .litem
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  	font-weight:bolder;
+  }
+  .hl
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  }
+  .required
+  {
+  	color:#268bd2;
+  	font-style:italic;
+  	font-weight:bold;
+  }
+  .inputbox
+  {
+  	background-color:#eee8d5;
+  	color:#586e75;
+  	font-family:Gill Sans MT;
+  	font-weight:bolder;
+  }
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Game of Life: Warm-up</h1>
+<p class="author"></p>
+</header>
+<p>This “warm-up” version of project 3 will focus on the following goals:</p>
+<ul>
+<li>Understanding + programming the basic rules of the Game of Life</li>
+<li>Learning to read command line arguments</li>
+</ul>
+<!---{{ Background-->
+<h2 id="background">Background</h2>
+<p>The <a href="https://en.wikipedia.org/wiki/Conway%27s_game_of_life">Game of Life</a> begins with a rectangular grid of cells, each of which is either “alive” or “dead”. The alive/dead state of each cell is updated according to the following rules:</p>
+<ol type="1">
+<li>If a live cell has fewer than 2 neighbors, it dies (underpopulation).</li>
+<li>If a live cell has more than 3 neighbors, it dies (overpopulation).</li>
+<li>If a dead cell has exactly 3 neighbors, it becomes alive (reproduction).</li>
+</ol>
+<p><strong>Important:</strong> Test your understanding of the rules <em>right now</em>. Try to apply the rules to the following grid, where a <code>.</code> denotes a dead cell, and an <code>O</code> denotes a living cell.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">......</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="ex">..O...</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="ex">...O..</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="ex">.OOO..</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a><span class="ex">......</span></span></code></pre></div>
+<p>Write down your answer, and then check against the below…<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+</p>
+<p>Answer:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="ex">before</span> <span class="kw">|</span> <span class="ex">after</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a><span class="ex">_______________</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a><span class="ex">......</span> <span class="kw">|</span> <span class="ex">......</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a><span class="ex">..O...</span> <span class="kw">|</span> <span class="ex">......</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a><span class="ex">...O..</span> <span class="kw">|</span> <span class="ex">.O.O..</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="ex">.OOO..</span> <span class="kw">|</span> <span class="ex">..OO..</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a><span class="ex">......</span> <span class="kw">|</span> <span class="ex">..O...</span></span></code></pre></div>
+<p>If you got it right, congratulations, you are ready to move on to the programming details. If not, re-read the rules until the above before/after is reconciled with your understanding.</p>
+<p>Note also that the grid is finite, but to avoid having any walls or boundaries, we’ll glue opposite edges together to form a <a href="https://en.wikipedia.org/wiki/Torus">torus</a>, kind of like some of those <a href="https://en.wikipedia.org/wiki/Wraparound_(video_games)">old school video games</a>. So, each cell will have <strong>exactly 8 neighbors</strong>. To illustrate, here are the neighbors (marked with <code>X</code>) of the topmost, leftmost cell, (marked with an <code>O</code>):</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">OX...X</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true"></a><span class="ex">XX...X</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true"></a><span class="ex">......</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true"></a><span class="ex">......</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true"></a><span class="ex">XX...X</span></span></code></pre></div>
+<p>Thus we would have the following before/after:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="ex">before</span> <span class="kw">|</span> <span class="ex">after</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a><span class="ex">_______________</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="ex">......</span> <span class="kw">|</span> <span class="ex">...O..</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="ex">......</span> <span class="kw">|</span> <span class="ex">......</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="ex">...O..</span> <span class="kw">|</span> <span class="ex">......</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="ex">....O.</span> <span class="kw">|</span> <span class="ex">..O.O.</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="ex">..OOO.</span> <span class="kw">|</span> <span class="ex">...OO.</span></span></code></pre></div>
+<!---}}-->
+<!---{{ Details-->
+<h2 id="programming-details">Programming Details</h2>
+<p>The directory <code>warm-up/</code> has a single source file which has a boolean representation of a glider configuration for the cells <em>hard-coded</em> into the source (it’s the same configuration as <code>tests/0</code>). You have two objectives for this warm up:</p>
+<ol type="1">
+<li>Read an integer (let’s call it <span class="math inline"><em>n</em></span>) from the <em>command line</em></li>
+<li>Apply the Game of Life rules <span class="math inline"><em>n</em></span> times to the hard-coded grid, and print the result (as <code>.</code> and <code>O</code> characters) to <code>stdout</code> (e.g. using <code>cout</code>).</li>
+</ol>
+<p>That is, if someone runs <code>./warmup 7</code>, it should advance the grid 7 times, and print out the final result <strong>once</strong>.</p>
+<p>Note that you should print the grid using the same characters as the example files I’ve given: use <code>.</code> (period) for dead and <code>O</code> (upper case letter “O”, <strong>not</strong> the digit zero!) for alive.</p>
+<h3 id="an-incremental-approach">An incremental approach</h3>
+<p>This may seem like common sense to many of you, but it may nevertheless be worth pointing out: don’t try to do the whole thing at once!<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> As a first step, make your warm-up program apply the rules <em>just once</em> and print the result to <code>stdout</code>. If you do it right, you’ll wind up with exactly the same thing as what is in <code>tests/1</code>.</p>
+<p>Once you’ve got that working, try to loop the application of the rules some fixed number of times (maybe 6 or 7, which will help you test the wrap-around). Again, you can check your answer against the corresponding file in <code>tests/</code>.</p>
+<p>If you have trouble, perhaps consult the <a href="readme.html#hints">main readme’s hints section</a> regarding vectors and modular arithmetic (the other hints are for later).</p>
+<p>OK! At this point, all that remains is to read the integer from the command line.</p>
+<h3 id="reading-command-line-arguments">Reading command line arguments</h3>
+<p>In most of our programs up until now, we have used a main function with the following prototype:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="dt">int</span> main();</span></code></pre></div>
+<p>Notice the absence of any parameters. To get access to the full command line that was used to invoke your program, we must instead use the following prototype:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv);</span></code></pre></div>
+<p>We adopt the conventional names <code>argc</code> and <code>argv</code> for the parameters, which have a nice mnemonic: <code>argc</code> stands for “<em>arg</em>ument <em>c</em>ount” and <code>argv</code> stands for “<em>arg</em>ument <em>v</em>alues”. However, the <code>char**</code> datatype might look a little cryptic! Fortunately, I can give you the gist of it right now, and it won’t hurt you to leave this part a little mysterious. (If you really want to know what the <code>char**</code> is about, you can read ahead to <code>l4.pdf</code>.)</p>
+<p>Pointer details aside, this is very straightforward: <code>argv[i]</code> gives you the i-th argument, and <code>argc</code> tells you how many arguments there are. (Perhaps think of <code>char** argv</code> like a <code>vector&lt;string&gt; argv</code>.)</p>
+<p><em>Note:</em> your program’s name (the compiled binary that was run) is included in the arguments at position 0.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> For example consider the following invocation of some program named <code>hello</code>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>$ <span class="ex">./hello</span> wow yay <span class="st">&quot;omg programming is so fun&quot;</span></span></code></pre></div>
+<p>In this case, you would have the following values for <code>argc</code> and <code>argv</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="ex">argc</span>    = 4</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="ex">argv</span>[0] = ./hello</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a><span class="ex">argv</span>[1] = wow</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a><span class="ex">argv</span>[2] = yay</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a><span class="ex">argv</span>[3] = omg programming is so fun</span></code></pre></div>
+<p><strong>Note:</strong> by default, the arguments are separated by spaces. If you want a single argument to contain spaces, you can surround it with quotes, as shown above.</p>
+<p>To illustrate further, here is a very simple program that just prints all its command line arguments:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="pp">#include </span><span class="im">&lt;stdio.h&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a><span class="dt">int</span> main(<span class="dt">int</span> argc, <span class="dt">char</span>** argv)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a>{</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a>    printf(<span class="st">&quot;argc</span><span class="sc">\t</span><span class="st">= </span><span class="sc">%i\n</span><span class="st">&quot;</span>,argc);</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a>    <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; argc; i++) {</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true"></a>        printf(<span class="st">&quot;argv[</span><span class="sc">%i</span><span class="st">]</span><span class="sc">\t</span><span class="st">= </span><span class="sc">%s\n</span><span class="st">&quot;</span>,i,argv[i]);</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true"></a>    }</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true"></a>    <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true"></a>}</span></code></pre></div>
+<p>For our purposes, we will expect a command line invocation like the following:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a>$ <span class="ex">./warmup</span> 7</span></code></pre></div>
+<p>This should compute 7 generations and print the result. Given what we just learned, we know that <code>argv[1]</code> should be <code>7</code> in this case. But there are some subtle points yet. For one, <code>argv[1]</code> might not be meaningful if someone runs <code>./warmup</code> with no arguments. You should check for this, and perhaps just compute and print a single generation. The second issue is that <code>argv[1]</code> has datatype <code>char*</code> (a C-style string), and not <code>int</code>. So we have to convert it. For this, I leave you to the man page of the library function <code>atoi</code>, which has the following prototype:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="dt">int</span> atoi(<span class="at">const</span> <span class="dt">char</span>* s);</span></code></pre></div>
+<p>If it still isn’t clear, you can see an example usage of <code>atoi</code> in <code>gol.cpp</code>.</p>
+<p><em>Note:</em> if too many arguments are given, you can just ignore them, or print some error message and exit if you’d prefer.</p>
+<h3 id="testing">Testing</h3>
+<p>If you want to be really sure you’ve got the warm-up right, I’ve left you a test script which runs your program with different inputs and compares against the files in the <code>../tests/</code> directory. To use it, run the following from the <code>warm-up/</code> directory:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>$ <span class="fu">make</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>$ <span class="ex">./test-warmup.sh</span></span></code></pre></div>
+<!---}}-->
+<!---{{ Submission Procedure-->
+<h2 id="submission-procedure">Submission Procedure</h2>
+<p>See the <a href="readme.html#submission-procedure">main readme</a>.</p>
+<!---}}-->
+<!---
+% vim:ff=unix:textwidth=78:foldmethod=marker:foldmarker={{,}}
+-->
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Even our warm up needs a warm up, it seems.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>If you want to see some interesting uses of <code>argv[0]</code>, look at busybox, which packs tons of programs into one, and then decides what to do based on the name used to invoke it. Bash also does something similar, running in “compatibility mode” when invoked as <code>sh</code> instead of <code>bash</code>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+</body>
+</html>
